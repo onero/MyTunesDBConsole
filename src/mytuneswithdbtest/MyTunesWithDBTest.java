@@ -5,7 +5,7 @@
  */
 package mytuneswithdbtest;
 
-import mytuneswithdbtest.gui.view.MainMenu;
+import mytuneswithdbtest.gui.view.MainMenuView;
 
 /**
  *
@@ -17,7 +17,7 @@ public class MyTunesWithDBTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MainMenu.getInstance().displayMenu();
+        MainMenuView.getInstance().displayMenu();
     }
 
 }

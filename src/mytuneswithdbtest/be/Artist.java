@@ -23,11 +23,11 @@ public class Artist {
         this.mName = mName;
     }
 
-    public int getmID() {
+    public int getID() {
         return mID;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 

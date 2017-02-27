@@ -5,32 +5,37 @@
  */
 package mytuneswithdbtest.gui.view;
 
+import java.util.ArrayList;
+import mytuneswithdbtest.be.Artist;
 import mytuneswithdbtest.be.Song;
-import mytuneswithdbtest.be.abstractions.AMenu;
-import mytuneswithdbtest.bll.SongManager;
+import mytuneswithdbtest.gui.model.ArtistModel;
 import mytuneswithdbtest.gui.model.OptionModel;
+import mytuneswithdbtest.gui.model.SongModel;
 
-public class SongMenu extends AMenu {
+public class SongMenuView extends AMenuView {
 
-    private static SongMenu instance;
+    private static SongMenuView instance;
 
     private final OptionModel optionModel;
 
-    private final SongManager songManager;
+    private final SongModel songModel;
 
-    private String[] options;
+    private final ArtistModel artistModel;
 
-    public static SongMenu getInstance() {
+    private final String[] options;
+
+    public static SongMenuView getInstance() {
         if (instance == null) {
-            instance = new SongMenu();
+            instance = new SongMenuView();
         }
         return instance;
     }
 
-    private SongMenu() {
+    private SongMenuView() {
         optionModel = OptionModel.getInstance();
-        songManager = SongManager.getInstance();
         options = optionModel.getSongCategoryOptions();
+        songModel = SongModel.getInstance();
+        artistModel = ArtistModel.getInstance();
     }
 
     @Override
@@ -40,11 +45,41 @@ public class SongMenu extends AMenu {
     }
 
     /**
+     * According to item selected in menu options, carry out action
+     *
+     * @param userOption
+     */
+    @Override
+    public void reactToUserInput(int userOption) {
+        switch (userOption) {
+            case 0:
+                MainMenuView.getInstance().displayMenu();
+                setDoneWithMenu();
+                break;
+            case 1:
+                displaySongs();
+                break;
+            case 2:
+                addSong();
+                break;
+            case 3:
+                promptUserToUpdateSong();
+                break;
+            case 4:
+                promptUserToDeleteSong();
+                break;
+            default:
+                invalidNumber();
+                System.out.println();
+        }
+    }
+
+    /**
      * Add a song to the DB
      */
     private void addSong() {
         Song newSong = promptUserToAddNewSong();
-        songManager.saveSong(newSong);
+        songModel.saveSong(newSong);
     }
 
     /**
@@ -72,9 +107,25 @@ public class SongMenu extends AMenu {
     private void displaySongs() {
         System.out.println();
         System.out.println("Songs in database:");
-        for (Song song : songManager.getSongs()) {
-            System.out.println("ID: " + song.getID() + " - " + song.getTitle());
+        ArrayList<Song> songs = getSongData();
+        for (Song song : songs) {
+            Artist songArtist = artistModel.getArtistByID(song.getArtistID());
+            System.out.println("ID: " + song.getID() + " - "
+                    + song.getTitle()
+                    + " by " + songArtist.getName());
         }
+    }
+
+    /**
+     * Get relevant song data from database
+     *
+     * @return
+     */
+    private ArrayList<Song> getSongData() {
+        ArrayList<Song> songs = songModel.getSongs();
+        //Make sure artists are updated at least once from database
+        artistModel.getArtists();
+        return songs;
     }
 
     /**
@@ -96,7 +147,7 @@ public class SongMenu extends AMenu {
      * Update parsedsong in DB
      */
     private void updateSong(Song updatedSong) {
-        songManager.updateSong(updatedSong);
+        songModel.updateSong(updatedSong);
     }
 
     /**
@@ -112,32 +163,7 @@ public class SongMenu extends AMenu {
      * Delete parsed song from DB
      */
     private void deleteSong(int id) {
-        songManager.deleteSong(id);
-    }
-
-    @Override
-    public void reactToUserInput(int userOption) {
-        switch (userOption) {
-            case 0:
-                MainMenu.getInstance().displayMenu();
-                setDoneWithMenu();
-                break;
-            case 1:
-                displaySongs();
-                break;
-            case 2:
-                addSong();
-                break;
-            case 3:
-                promptUserToUpdateSong();
-                break;
-            case 4:
-                promptUserToDeleteSong();
-                break;
-            default:
-                invalidNumber();
-                System.out.println();
-        }
+        songModel.deleteSong(id);
     }
 
 }

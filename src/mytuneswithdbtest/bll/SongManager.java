@@ -14,7 +14,9 @@ public class SongManager {
 
     private static SongManager instance;
 
-    private final SongDAO dbManager;
+    private final SongDAO songDAO;
+
+    private ArrayList<Song> songsFromDB;
 
     public static SongManager getInstance() {
         if (instance == null) {
@@ -24,7 +26,7 @@ public class SongManager {
     }
 
     private SongManager() {
-        dbManager = SongDAO.getInstance();
+        songDAO = SongDAO.getInstance();
     }
 
     /**
@@ -33,7 +35,7 @@ public class SongManager {
      * @param song
      */
     public void saveSong(Song song) {
-        dbManager.addSongToDB(song);
+        songDAO.addSongToDB(song);
     }
 
     /**
@@ -42,9 +44,9 @@ public class SongManager {
      * @return
      */
     public ArrayList<Song> getSongs() {
-        ArrayList<Song> songsFromDB = new ArrayList<>();
+        songsFromDB = new ArrayList<>();
         try {
-            songsFromDB.addAll(dbManager.getAllSongs());
+            songsFromDB.addAll(songDAO.getAllSongs());
         } catch (SQLException e) {
             System.out.println("Couldn't get songs");
             System.out.println(e);
@@ -58,7 +60,7 @@ public class SongManager {
      * @param song
      */
     public void updateSong(Song song) {
-        dbManager.updateSong(song);
+        songDAO.updateSong(song);
     }
 
     /**
@@ -67,7 +69,7 @@ public class SongManager {
      * @param id
      */
     public void deleteSong(int id) {
-        dbManager.deleteSong(id);
+        songDAO.deleteSong(id);
     }
 
 }

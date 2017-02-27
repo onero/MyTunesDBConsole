@@ -5,29 +5,24 @@
  */
 package mytuneswithdbtest.gui.view;
 
-import mytuneswithdbtest.be.abstractions.AMenu;
-import mytuneswithdbtest.bll.SongManager;
 import mytuneswithdbtest.gui.model.OptionModel;
 
-public class MainMenu extends AMenu {
+public class MainMenuView extends AMenuView {
 
-    private static MainMenu instance;
-
-    private final SongManager songManager;
+    private static MainMenuView instance;
 
     private final OptionModel optionModel;
 
     private final String[] options;
 
-    public static MainMenu getInstance() {
+    public static MainMenuView getInstance() {
         if (instance == null) {
-            instance = new MainMenu();
+            instance = new MainMenuView();
         }
         return instance;
     }
 
-    private MainMenu() {
-        songManager = SongManager.getInstance();
+    private MainMenuView() {
         optionModel = OptionModel.getInstance();
         options = optionModel.getMainCategoryOptions();
     }
@@ -40,6 +35,11 @@ public class MainMenu extends AMenu {
         displayMenuOptions(options);
     }
 
+    /**
+     * According to item selected in menu options, carry out action
+     *
+     * @param userOption
+     */
     @Override
     public void reactToUserInput(int userOption) {
         switch (userOption) {
@@ -48,11 +48,12 @@ public class MainMenu extends AMenu {
                 setDoneWithMenu();
                 break;
             case 1:
-                SongMenu.getInstance().displayMenu();
+                SongMenuView.getInstance().displayMenu();
                 setDoneWithMenu();
                 break;
             case 2:
-                //TODO ALH: Add Artist categories
+                ArtistMenuView.getInstance().displayMenu();
+                setDoneWithMenu();
                 break;
             case 3:
                 //TODO ALH: Add Genre categories

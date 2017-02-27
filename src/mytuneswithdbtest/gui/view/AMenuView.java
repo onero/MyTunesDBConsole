@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mytuneswithdbtest.be.abstractions;
+package mytuneswithdbtest.gui.view;
 
-public abstract class AMenu {
+public abstract class AMenuView {
 
     private boolean doneWithMenu = false;
 
@@ -22,7 +22,7 @@ public abstract class AMenu {
     public void displayMenuOptions(String[] options) {
         do {
             System.out.println();
-            System.out.println("Choose a category");
+            System.out.println("Choose an option");
             int optionNr = 0;
             for (String option : options) {
                 System.out.println(optionNr + ": " + option);
