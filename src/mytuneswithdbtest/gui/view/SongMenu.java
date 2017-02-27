@@ -5,87 +5,86 @@
  */
 package mytuneswithdbtest.gui.view;
 
+import mytuneswithdbtest.be.AMenu;
 import mytuneswithdbtest.be.Song;
 import mytuneswithdbtest.bll.SongManager;
+import mytuneswithdbtest.gui.model.OptionModel;
 
-public class MainView {
+public class SongMenu extends AMenu {
 
-    private boolean isUserDone;
+    private static SongMenu instance;
+
+    private final OptionModel optionModel;
 
     private final SongManager songManager;
 
-    public MainView() {
-        songManager = SongManager.getInstance();
-        isUserDone = false;
-    }
-
-    /**
-     * Start the program
-     */
-    public void startProgram() {
-        System.out.println("Welcome to this awesome application!");
-        System.out.println();
-        promptUserForOption();
-    }
-
-    /**
-     * List options for the user
-     */
-    private void listOptions() {
-        System.out.println("You have the following options:");
-        System.out.println("0: Exit program");
-        System.out.println("1: Get songs in database");
-        System.out.println("2: Add song to database");
-        System.out.println("3: Update song in database");
-        System.out.println("4: Delete song from database");
-    }
-
-    /**
-     * Prompt user for option
-     */
-    private void promptUserForOption() {
-        while (!isUserDone) {
-            System.out.println();
-            listOptions();
-            System.out.println();
-            String option = Console.Readers.readString("Type your option: ");
-            reactToUserInput(option);
+    public static SongMenu getInstance() {
+        if (instance == null) {
+            instance = new SongMenu();
         }
+        return instance;
+    }
+
+    private SongMenu() {
+        optionModel = OptionModel.getInstance();
+        songManager = SongManager.getInstance();
+    }
+
+    @Override
+    public void displayMenu() {
+        displaySongOptions();
+    }
+
+    /**
+     * For each option in the category song, display options
+     */
+    private void displaySongOptions() {
+        boolean doneWithSongs = false;
+        do {
+            System.out.println();
+            System.out.println("Choose a song option");
+            int optionNr = 0;
+            for (String songCategoryOption : optionModel.getSongCategoryOptions()) {
+                System.out.println(optionNr + ": " + songCategoryOption);
+                optionNr++;
+            }
+            int userOption = prompUserForInput();
+            doneWithSongs = reactToUserInputForSong(userOption, doneWithSongs);
+        } while (!doneWithSongs);
     }
 
     /**
      * Execute option depending on user choice
      */
-    private void reactToUserInput(String option) {
+    private boolean reactToUserInputForSong(int option, boolean doneWithSongs) {
         switch (option) {
-            case "0":
-                System.out.println();
-                System.out.println("Terminating program.");
-                System.out.println("Bye!");
-                isUserDone = true;
+            case 0:
+                MainMenu.getInstance().displayMenu();
+                doneWithSongs = true;
                 break;
-            case "1":
+            case 1:
                 displaySongs();
                 break;
-            case "2":
+            case 2:
                 addSong();
                 break;
-            case "3":
+            case 3:
                 promptUserToUpdateSong();
                 break;
-            case "4":
+            case 4:
                 promptUserToDeleteSong();
                 break;
             default:
+                invalidNumber();
                 System.out.println();
-                System.out.println("You must pick a valid number");
         }
+        return doneWithSongs;
     }
 
     /**
      * Add a song to the DB
      */
-    public void addSong() {
+    private void addSong() {
         Song newSong = promptUserToAddNewSong();
         songManager.saveSong(newSong);
     }
