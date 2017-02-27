@@ -5,8 +5,8 @@
  */
 package mytuneswithdbtest.gui.view;
 
-import mytuneswithdbtest.be.AMenu;
 import mytuneswithdbtest.be.Song;
+import mytuneswithdbtest.be.abstractions.AMenu;
 import mytuneswithdbtest.bll.SongManager;
 import mytuneswithdbtest.gui.model.OptionModel;
 
@@ -18,6 +18,8 @@ public class SongMenu extends AMenu {
 
     private final SongManager songManager;
 
+    private String[] options;
+
     public static SongMenu getInstance() {
         if (instance == null) {
             instance = new SongMenu();
@@ -28,57 +30,13 @@ public class SongMenu extends AMenu {
     private SongMenu() {
         optionModel = OptionModel.getInstance();
         songManager = SongManager.getInstance();
+        options = optionModel.getSongCategoryOptions();
     }
 
     @Override
     public void displayMenu() {
-        displaySongOptions();
-    }
-
-    /**
-     * For each option in the category song, display options
-     */
-    private void displaySongOptions() {
-        boolean doneWithSongs = false;
-        do {
-            System.out.println();
-            System.out.println("Choose a song option");
-            int optionNr = 0;
-            for (String songCategoryOption : optionModel.getSongCategoryOptions()) {
-                System.out.println(optionNr + ": " + songCategoryOption);
-                optionNr++;
-            }
-            int userOption = prompUserForInput();
-            doneWithSongs = reactToUserInputForSong(userOption, doneWithSongs);
-        } while (!doneWithSongs);
-    }
-
-    /**
-     * Execute option depending on user choice
-     */
-    private boolean reactToUserInputForSong(int option, boolean doneWithSongs) {
-        switch (option) {
-            case 0:
-                MainMenu.getInstance().displayMenu();
-                doneWithSongs = true;
-                break;
-            case 1:
-                displaySongs();
-                break;
-            case 2:
-                addSong();
-                break;
-            case 3:
-                promptUserToUpdateSong();
-                break;
-            case 4:
-                promptUserToDeleteSong();
-                break;
-            default:
-                invalidNumber();
-                System.out.println();
-        }
-        return doneWithSongs;
+        System.out.println("Song options");
+        displayMenuOptions(options);
     }
 
     /**
@@ -155,6 +113,31 @@ public class SongMenu extends AMenu {
      */
     private void deleteSong(int id) {
         songManager.deleteSong(id);
+    }
+
+    @Override
+    public void reactToUserInput(int userOption) {
+        switch (userOption) {
+            case 0:
+                MainMenu.getInstance().displayMenu();
+                setDoneWithMenu();
+                break;
+            case 1:
+                displaySongs();
+                break;
+            case 2:
+                addSong();
+                break;
+            case 3:
+                promptUserToUpdateSong();
+                break;
+            case 4:
+                promptUserToDeleteSong();
+                break;
+            default:
+                invalidNumber();
+                System.out.println();
+        }
     }
 
 }

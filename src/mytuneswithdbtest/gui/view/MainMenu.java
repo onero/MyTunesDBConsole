@@ -5,7 +5,7 @@
  */
 package mytuneswithdbtest.gui.view;
 
-import mytuneswithdbtest.be.AMenu;
+import mytuneswithdbtest.be.abstractions.AMenu;
 import mytuneswithdbtest.bll.SongManager;
 import mytuneswithdbtest.gui.model.OptionModel;
 
@@ -17,6 +17,8 @@ public class MainMenu extends AMenu {
 
     private final OptionModel optionModel;
 
+    private final String[] options;
+
     public static MainMenu getInstance() {
         if (instance == null) {
             instance = new MainMenu();
@@ -27,41 +29,27 @@ public class MainMenu extends AMenu {
     private MainMenu() {
         songManager = SongManager.getInstance();
         optionModel = OptionModel.getInstance();
+        options = optionModel.getMainCategoryOptions();
     }
 
     @Override
     public void displayMenu() {
         System.out.println();
         System.out.println("Welcome to this awesome application!");
-        displayMainCategories();
+        System.out.println();
+        displayMenuOptions(options);
     }
 
-    private void displayMainCategories() {
-        boolean nextMenu = true;
-        do {
-            System.out.println();
-            System.out.println("Choose a category");
-            int optionNr = 0;
-            for (String mainCategoryOption : optionModel.getMainCategoryOptions()) {
-                System.out.println(optionNr + ": " + mainCategoryOption);
-                optionNr++;
-            }
-            int userOption = prompUserForInput();
-            nextMenu = reactToUserInputForMainCategory(userOption, nextMenu);
-        } while (!nextMenu);
-
-    }
-
-    /**
-     * Execute option depending on user choice
-     */
-    private boolean reactToUserInputForMainCategory(int option, boolean nextMenu) {
-        switch (option) {
+    @Override
+    public void reactToUserInput(int userOption) {
+        switch (userOption) {
             case 0:
                 terminateProgram();
+                setDoneWithMenu();
                 break;
             case 1:
                 SongMenu.getInstance().displayMenu();
+                setDoneWithMenu();
                 break;
             case 2:
                 //TODO ALH: Add Artist categories
@@ -74,9 +62,6 @@ public class MainMenu extends AMenu {
                 break;
             default:
                 invalidNumber();
-                nextMenu = false;
         }
-        return nextMenu;
     }
-
 }

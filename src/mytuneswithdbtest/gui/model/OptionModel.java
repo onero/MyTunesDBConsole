@@ -32,12 +32,24 @@ public class OptionModel {
         "Delete song"
     };
 
+    private final String[] artistCategoryOptions = {
+        "Back to categories",
+        "Get artists",
+        "Add artist",
+        "Update artist",
+        "Delete artist"
+    };
+
     public String[] getMainCategoryOptions() {
         return mainCategoryOptions;
     }
 
     public String[] getSongCategoryOptions() {
         return songCategoryOptions;
+    }
+
+    public String[] getArtistCategoryOptions() {
+        return artistCategoryOptions;
     }
 
 }
